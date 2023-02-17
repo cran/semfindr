@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2023-02-17" />
+
+<title>Approximate Case Influence Using Scores and Casewise Likelihood</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Approximate Case Influence Using Scores and
+Casewise Likelihood</h1>
+<h4 class="date">2023-02-17</h4>
+
+
+
+<p>This vignette explains the computational shortcut implemented in
+<code>semfindr</code> to approximate the casewise influence. The
+approximation is most beneficial when the sample size <em>N</em> is
+large, where the approximation works better and the computational cost
+for refitting models <em>N</em> times is high.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semfindr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> pa_dat</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; This is lavaan 0.6-14</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lavaan is FREE software! Please report any bugs.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">m1 ~ iv1 + iv2</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">dv ~ m1</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(mod, dat)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">&quot;semfindr_fit_rerun.RDS&quot;</span>)) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    fit_rerun <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;semfindr_fit_rerun.RDS&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    fit_rerun <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(fit_rerun, <span class="st">&quot;semfindr_fit_rerun.RDS&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+<div id="using-scores-to-approximate-case-influence" class="section level2">
+<h2>Using Scores to Approximate Case Influence</h2>
+<p><code>lavaan</code> provides the handy <code>lavScores()</code>
+function to evaluate <span class="math display">\[s_i(\theta_m) =
+\frac{\partial \ell_i(\theta_m)}{\partial \theta_m}\]</span> for
+observation <span class="math inline">\(i\)</span>, where <span class="math inline">\(\ell_i(\theta)\)</span> denotes the casewise
+loglikelihood function and <span class="math inline">\(\theta_m\)</span>
+is the <span class="math inline">\(m\)</span>th model parameter.</p>
+<p>For example,</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">lavScores</span>(fit)[ , <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           m1~iv1</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]  0.23975993</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]  0.06630118</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,] -0.33999129</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,] -0.22536120</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5,]  0.61375747</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6,]  0.03747179</span></span></code></pre></div>
+<p>indicates the partial derivative of the casewise loglikelihod with
+respect to the parameter <code>m1~iv1</code>. Because the sum of the
+partial derivatives across all observations is zero at the maximum
+likelihood estimate with the full sample (<span class="math inline">\(\hat \theta_m\)</span>; i.e., the derivative of
+loglikelihood of the full data is 0), <span class="math inline">\(-
+s_i(\theta_m)\)</span> can be used as an estimate of the partial
+derivative of the loglikelihood at <span class="math inline">\(\hat
+\theta_m\)</span> <strong>for the sample without observation <span class="math inline">\(i\)</span></strong>. This information can be used
+to approximate the maximum likelihood estimate for <span class="math inline">\(\theta_m\)</span> when case <span class="math inline">\(i\)</span> is dropped, denoted as <span class="math inline">\(\hat \theta_{m(-i)}\)</span></p>
+<p>The second-order Taylor series expansion can be used to approximate
+the parameter vector estimate with an observation deleted, <span class="math inline">\(\hat \theta_{(-i)}\)</span>, as in the iterative
+<a href="https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization">Newton’s
+method</a>. Specifically,</p>
+<p><span class="math display">\[\hat \theta_{(i)} \approx \hat \theta -
+\frac{N}{N - 1}V(\hat \theta) \nabla \ell(\hat \theta)\]</span> <span class="math display">\[\hat \theta - \hat \theta_{(i)} \approx
+\frac{N}{N - 1}V(\hat \theta) \nabla \ell_i(\hat \theta),\]</span> where
+<span class="math inline">\(\nabla \ell_i(\hat \theta)\)</span> is the
+gradient vector of the casewise loglikelihood with respect to the
+parameters (i.e., score). The <span class="math inline">\(N / (N -
+1)\)</span> term is used to adjust for the decrease in sample size (this
+adjustment is trivial in large samples). This procedure should be the
+same as equation (4) of <a href="https://doi.org/10.1080/03610929108830742">Tanaka et
+al. (1991)</a> (p. 3807) and is related to the one-step approximation
+described by <a href="https://conservancy.umn.edu/handle/11299/37076">Cook and Weisberg
+(1982)</a> (p. 182).</p>
+<div id="comparison" class="section level3">
+<h3>Comparison</h3>
+<p>The approximation is implemented in the
+<code>est_change_raw_approx()</code> function:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_est_change_approx <span class="ot">&lt;-</span> <span class="fu">est_change_raw_approx</span>(fit)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit_est_change_approx)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          m1~iv1        m1~iv2        dv~m1       m1~~m1       dv~~dv</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.0025826195 -2.987160e-03  0.005478785 -0.004783799  0.003015677</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  0.0007581403  3.411181e-04 -0.001383390 -0.008744342 -0.011010937</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.0039693069 -3.914928e-03 -0.003154241 -0.008240420 -0.008525904</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 -0.0025450320 -3.118916e-04  0.002296162 -0.006671599 -0.008331854</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  0.0070027557  2.748024e-03  0.003450422  0.006144848 -0.012529327</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  0.0004248632  9.671545e-05  0.001008609 -0.008958217 -0.010293608</span></span></code></pre></div>
+<p>Here is a comparison between the approximation using
+<code>semfindr::est_change_raw_approx()</code> and
+<code>semfindr::est_change_raw()</code></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From semfindr</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fit_est_change_raw <span class="ot">&lt;-</span> <span class="fu">est_change_raw</span>(fit_rerun)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the differences</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(<span class="fu">as.matrix</span>(fit_est_change_raw)))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>tmp2 <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(<span class="fu">as.matrix</span>(fit_est_change_approx)))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>est_change_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">param =</span> <span class="fu">rep</span>(<span class="fu">colnames</span>(fit_est_change_raw),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                                        <span class="fu">nrow</span>(fit_est_change_raw)),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">est_change =</span> tmp1,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">est_change_approx =</span> tmp2)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(est_change_df, <span class="fu">aes</span>(<span class="at">x =</span> est_change, <span class="at">y =</span> est_change_approx)) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">0.8</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> param) <span class="sc">+</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The results are pretty similar.</p>
+</div>
+<div id="generalized-cooks-distance-gcd" class="section level3">
+<h3>Generalized Cook’s distance (<em>gCD</em>)</h3>
+<p>We can use the approximate parameter changes to approximate the
+<em>gCD</em> (see also Tanaka et al., 1991, equation 13, p. 3811):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Information matrix (Hessian)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>information_fit <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit, <span class="at">what =</span> <span class="st">&quot;information&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Short cut for computing quadratic form (https://stackoverflow.com/questions/27157127/efficient-way-of-calculating-quadratic-forms-avoid-for-loops)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>gcd_approx <span class="ot">&lt;-</span> (<span class="fu">nobs</span>(fit) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">rowSums</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  (fit_est_change_approx <span class="sc">%*%</span> information_fit) <span class="sc">*</span> fit_est_change_approx</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>This is implemented in the <code>est_change_approx()</code>
+function:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_est_change_approx <span class="ot">&lt;-</span> <span class="fu">est_change_approx</span>(fit)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit_est_change_approx)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         m1~iv1       m1~iv2        dv~m1      m1~~m1      dv~~dv  gcd_approx</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.024713396 -0.030383580  0.052370026 -0.03784100  0.01630488 0.005850455</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  0.007254736  0.003469647 -0.013223396 -0.06916983 -0.05953293 0.008312026</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.037982774 -0.039820283 -0.030150418 -0.06518369 -0.04609708 0.009904544</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 -0.024353717 -0.003172373  0.021948305 -0.05277394 -0.04504791 0.005719499</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  0.067010210  0.027951233  0.032981527  0.04860722 -0.06774242 0.012793226</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  0.004065567  0.000983731  0.009640981 -0.07086163 -0.05565453 0.007984573</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare to exact computation</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit_est_change <span class="ot">&lt;-</span> <span class="fu">est_change</span>(fit_rerun)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>gcd_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">gcd_exact =</span> fit_est_change[ , <span class="st">&quot;gcd&quot;</span>],</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">gcd_approx =</span> fit_est_change_approx[ , <span class="st">&quot;gcd_approx&quot;</span>]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gcd_df, <span class="fu">aes</span>(<span class="at">x =</span> gcd_exact, <span class="at">y =</span> gcd_approx)) <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The approximation tend to underestimate the actual <em>gCD</em> but
+the rank ordering is almost identical. This is discussed also in Tanaka
+et al. (1991), who proposed a correction by applying a one-step
+approximation after the correction (currently not implemented due to the
+need to recompute scores with updated parameter values).</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(gcd_df, <span class="at">method =</span> <span class="st">&quot;spearman&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            gcd_exact gcd_approx</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gcd_exact   1.000000   0.999892</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gcd_approx  0.999892   1.000000</span></span></code></pre></div>
+</div>
+</div>
+<div id="approximate-change-in-fit" class="section level2">
+<h2>Approximate Change in Fit</h2>
+<p>The casewise loglikelihood—the contribution to the likelihood
+function by an observation—can be computed in <code>lavaan</code>, which
+approximates the change in loglikelihood when an observation is
+deleted:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lli <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit, <span class="at">what =</span> <span class="st">&quot;loglik.casewise&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lli)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -2.776787 -2.034084 -2.154825 -2.248100 -2.793426 -2.049238</span></span></code></pre></div>
+<p>Here, <span class="math inline">\(\ell(\hat \theta)\)</span> will
+drop 2.78 when observation 1 is deleted. This should approximate <span class="math inline">\(\ell(\hat \theta_{(-i)})\)</span> as long as <span class="math inline">\(\hat \theta_{(-i)}\)</span> is not too different
+from <span class="math inline">\(\hat \theta\)</span>. Here’s a
+comparison:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predicted ll without observation 1</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">@</span>loglik<span class="sc">$</span>loglik <span class="sc">-</span> lli[<span class="dv">1</span>]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -289.8272</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Actual ll without observation 1</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>fit_no1 <span class="ot">&lt;-</span> <span class="fu">sem</span>(mod, dat[<span class="sc">-</span><span class="dv">1</span>, ])</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>fit_no1<span class="sc">@</span>loglik<span class="sc">$</span>loglik</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -289.8156</span></span></code></pre></div>
+<p>They are pretty close. To approximate the change in <span class="math inline">\(\chi^2\)</span>, as well as other <span class="math inline">\(\chi^2\)</span>-based fit indices, we can use the
+<code>fit_measures_change_approx()</code> function:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>chisq_i_approx <span class="ot">&lt;-</span> <span class="fu">fit_measures_change_approx</span>(fit)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare to the actual chisq when dropping observation 1</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">predict =</span> chisq_i_approx[<span class="dv">1</span>, <span class="st">&quot;chisq&quot;</span>] <span class="sc">+</span> <span class="fu">fitmeasures</span>(fit, <span class="st">&quot;chisq&quot;</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">actual =</span> <span class="fu">fitmeasures</span>(fit_no1, <span class="st">&quot;chisq&quot;</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; predict.chisq  actual.chisq </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      6.871042      6.557397</span></span></code></pre></div>
+<div id="comparing-exact-and-approximate-changes-in-fit-indices" class="section level3">
+<h3>Comparing exact and approximate changes in fit indices</h3>
+<p>Change in <span class="math inline">\(\chi^2\)</span></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exact measure from semfindr</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">fit_measures_change</span>(fit_rerun)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>chisq_change_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chisq_change =</span> out[ , <span class="st">&quot;chisq&quot;</span>],</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">chisq_change_approx =</span> chisq_i_approx[ , <span class="st">&quot;chisq&quot;</span>]</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chisq_change_df, <span class="fu">aes</span>(<span class="at">x =</span> chisq_change, <span class="at">y =</span> chisq_change_approx)) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Change in RMSEA</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>rmsea_change_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">rmsea_change =</span> out[ , <span class="st">&quot;rmsea&quot;</span>],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">rmsea_change_approx =</span> chisq_i_approx[ , <span class="st">&quot;rmsea&quot;</span>]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(rmsea_change_df, <span class="fu">aes</span>(<span class="at">x =</span> rmsea_change, <span class="at">y =</span> rmsea_change_approx)) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The values aligned reasonably well along the 45-degree line.</p>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Cook, R. D., &amp; Weisberg, S. (1982). <em>Residuals and influence
+in regression.</em> New York: Chapman and Hall. <a href="https://conservancy.umn.edu/handle/11299/37076" class="uri">https://conservancy.umn.edu/handle/11299/37076</a></p>
+<p>Tanaka, Y., Watadani, S., &amp; Ho Moon, S. (1991). Influence in
+covariance structure analysis: With an application to confirmatory
+factor analysis. <em>Communications in Statistics - Theory and Methods,
+20</em>(12), 3805–3821. <a href="https://doi.org/10.1080/03610929108830742" class="uri">https://doi.org/10.1080/03610929108830742</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
