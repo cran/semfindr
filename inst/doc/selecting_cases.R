@@ -27,7 +27,7 @@ rerun_out <- lavaan_rerun(fit,
 
 ## -----------------------------------------------------------------------------
 rerun_out
-round(est_change(rerun_out), 3)
+est_change(rerun_out)
 
 ## -----------------------------------------------------------------------------
 rerun_out <- lavaan_rerun(fit,
@@ -39,7 +39,7 @@ rerun_out <- lavaan_rerun(fit,
 
 ## -----------------------------------------------------------------------------
 rerun_out
-round(est_change(rerun_out), 3)
+est_change(rerun_out)
 
 ## -----------------------------------------------------------------------------
 rerun_out <- lavaan_rerun(fit,
@@ -48,7 +48,7 @@ rerun_out <- lavaan_rerun(fit,
 
 ## -----------------------------------------------------------------------------
 rerun_out
-round(est_change(rerun_out), 3)
+est_change(rerun_out)
 
 ## -----------------------------------------------------------------------------
 rerun_out <- lavaan_rerun(fit,
@@ -57,5 +57,5 @@ rerun_out <- lavaan_rerun(fit,
 
 ## -----------------------------------------------------------------------------
 rerun_out
-round(est_change(rerun_out), 3)
+est_change(rerun_out)
 

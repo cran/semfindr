@@ -37,15 +37,13 @@ fit_no43 <- sem(mod, dat[-43, ])
 
 ## -----------------------------------------------------------------------------
 fit_est_change <- est_change(fit_rerun)
-round(head(fit_est_change), 3)
+fit_est_change
 
-## -----------------------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 i <- order(fit_est_change[, "gcd"],
            decreasing = TRUE)
 i_top5 <- i[1:5]
 round(fit_est_change[i_top5, ], 3)
-
-## ----echo = FALSE-------------------------------------------------------------
 i_top5_gcd_overall <- i_top5
 
 ## -----------------------------------------------------------------------------
@@ -53,9 +51,11 @@ fit_est_change_paths_only <- est_change(fit_rerun,
                                         parameters = c("m1 ~ iv1",
                                                       "m1 ~ iv2",
                                                       "dv ~ m1"))
+fit_est_change_paths_only
+
+## ----echo = FALSE-------------------------------------------------------------
 i <- order(fit_est_change_paths_only[, "gcd"],
            decreasing = TRUE)
-round(fit_est_change_paths_only[i[1:5], ], 3)
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  fit_est_change_paths_only <- est_change(fit_rerun,
@@ -66,12 +66,12 @@ i_top5_gcd_paths <- i[1:5]
 
 ## -----------------------------------------------------------------------------
 fit_est_change_raw <- est_change_raw(fit_rerun)
-round(fit_est_change_raw[i_top5, ], 3)
+fit_est_change_raw
 
 ## -----------------------------------------------------------------------------
 fit_est_change_raw_std <- est_change_raw(fit_rerun,
                                          standardized = TRUE)
-round(fit_est_change_raw_std[i_top5, ], 3)
+fit_est_change_raw_std
 
 ## -----------------------------------------------------------------------------
 standardizedSolution(fit, se = FALSE)[1, ]
@@ -83,7 +83,7 @@ fit_est_change_raw_std_paths <- est_change_raw(fit_rerun,
                                                parameters = c("m1 ~ iv1",
                                                               "m1 ~ iv2",
                                                               "dv ~ m1"))
-round(fit_est_change_raw_std_paths[i_top5, ], 3)
+fit_est_change_raw_std_paths
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  fit_est_change_raw_std_paths <- est_change_raw(fit_rerun,
@@ -92,19 +92,22 @@ round(fit_est_change_raw_std_paths[i_top5, ], 3)
 
 ## -----------------------------------------------------------------------------
 fit_md <- mahalanobis_rerun(fit_rerun)
-round(fit_md[i_top5, , drop = FALSE], 3)
+fit_md
 
 ## -----------------------------------------------------------------------------
 fit_mc <- fit_measures_change(fit_rerun,
             fit_measures = c("chisq", "cfi", "tli", "rmsea"))
-round(fit_mc[i_top5, ], 3)
+fit_mc
+
+## -----------------------------------------------------------------------------
+print(fit_mc, sort_by = "chisq")
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  fit_mc <- fit_measures_change(fit_rerun)
 
 ## -----------------------------------------------------------------------------
 fit_influence <- influence_stat(fit_rerun)
-round(fit_influence[i_top5, ], 3)
+fit_influence
 
 ## -----------------------------------------------------------------------------
 gcd_plot(fit_influence,
@@ -142,6 +145,11 @@ est_change_plot(fit_est_change_raw,
                 parameters = "~",
                 largest_change = 3)
 
+## ----eval = FALSE-------------------------------------------------------------
+#  est_change_plot(fit_influence,
+#                  parameters = "~",
+#                  largest_change = 3)
+
 ## ----fig.height = 7-----------------------------------------------------------
 est_change_gcd_plot(fit_est_change,
                     largest_gcd = 3)
@@ -151,34 +159,42 @@ est_change_gcd_plot(fit_est_change,
                     parameters = "~",
                     largest_gcd = 3)
 
+## ----eval = FALSE-------------------------------------------------------------
+#  est_change_gcd_plot(fit_influence,
+#                      parameters = "~",
+#                      largest_gcd = 3)
+
 ## -----------------------------------------------------------------------------
 fit_est_change_approx <- est_change_approx(fit)
-round(head(fit_est_change_approx), 3)
+fit_est_change_approx
 
 ## -----------------------------------------------------------------------------
 fit_est_change_approx_paths <- est_change_approx(fit,
                                                  parameters = "~")
-round(head(fit_est_change_approx_paths), 3)
+fit_est_change_approx_paths
 
 ## -----------------------------------------------------------------------------
 fit_est_change_raw_approx <- est_change_raw_approx(fit)
-round(fit_est_change_raw_approx[i_top5, ], 3)
+fit_est_change_raw_approx
 
 ## -----------------------------------------------------------------------------
 fit_md <- mahalanobis_rerun(fit)
-round(fit_md[i_top5, , drop = FALSE], 3)
+fit_md
 
 ## -----------------------------------------------------------------------------
 fit_mc_approx <- fit_measures_change_approx(fit,
                    fit_measures = c("chisq", "cfi", "tli", "rmsea"))
-round(fit_mc_approx[1:5, ], 3)
+fit_mc_approx
+
+## -----------------------------------------------------------------------------
+print(fit_mc_approx, sort_by = "chisq")
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  fit_mc_approx <- fit_measures_change_approx(fit)
 
 ## -----------------------------------------------------------------------------
 fit_influence_approx <- influence_stat(fit)
-round(fit_influence_approx[1:5, ], 3)
+fit_influence_approx
 
 ## -----------------------------------------------------------------------------
 gcd_plot(fit_influence_approx,
@@ -216,6 +232,11 @@ est_change_plot(fit_est_change_raw_approx,
                 parameters = "~",
                 largest_change = 3)
 
+## ----eval = FALSE-------------------------------------------------------------
+#  est_change_plot(fit_influence_approx,
+#                  parameters = "~",
+#                  largest_change = 3)
+
 ## ----fig.height = 7-----------------------------------------------------------
 est_change_gcd_plot(fit_est_change_approx,
                     largest_gcd = 3)
@@ -224,4 +245,9 @@ est_change_gcd_plot(fit_est_change_approx,
 est_change_gcd_plot(fit_est_change_approx,
                     parameters = "~",
                     largest_gcd = 3)
+
+## ----eval = FALSE-------------------------------------------------------------
+#  est_change_gcd_plot(fit_influence_approx,
+#                      parameters = "~",
+#                      largest_gcd = 3)
 

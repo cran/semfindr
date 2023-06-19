@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2023-02-17" />
+<meta name="date" content="2023-06-20" />
 
 <title>Approximate Case Influence Using Scores and Casewise Likelihood</title>
 
@@ -339,19 +339,19 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Approximate Case Influence Using Scores and
 Casewise Likelihood</h1>
-<h4 class="date">2023-02-17</h4>
+<h4 class="date">2023-06-20</h4>
 
 
 
-<p>This vignette explains the computational shortcut implemented in
-<code>semfindr</code> to approximate the casewise influence. The
-approximation is most beneficial when the sample size <em>N</em> is
-large, where the approximation works better and the computational cost
-for refitting models <em>N</em> times is high.</p>
+<p>This vignette explains the computational shortcut implemented in <a href="https://sfcheung.github.io/semfindr/">semfindr</a> to approximate
+the casewise influence. The approximation is most beneficial when the
+sample size <em>N</em> is large, where the approximation works better
+and the computational cost for refitting models <em>N</em> times is
+high.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semfindr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> pa_dat</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; This is lavaan 0.6-14</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; This is lavaan 0.6-15</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lavaan is FREE software! Please report any bugs.</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span>
@@ -412,14 +412,26 @@ described by <a href="https://conservancy.umn.edu/handle/11299/37076">Cook and W
 <p>The approximation is implemented in the
 <code>est_change_raw_approx()</code> function:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_est_change_approx <span class="ot">&lt;-</span> <span class="fu">est_change_raw_approx</span>(fit)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit_est_change_approx)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          m1~iv1        m1~iv2        dv~m1       m1~~m1       dv~~dv</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.0025826195 -2.987160e-03  0.005478785 -0.004783799  0.003015677</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  0.0007581403  3.411181e-04 -0.001383390 -0.008744342 -0.011010937</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.0039693069 -3.914928e-03 -0.003154241 -0.008240420 -0.008525904</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 -0.0025450320 -3.118916e-04  0.002296162 -0.006671599 -0.008331854</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  0.0070027557  2.748024e-03  0.003450422  0.006144848 -0.012529327</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  0.0004248632  9.671545e-05  0.001008609 -0.008958217 -0.010293608</span></span></code></pre></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fit_est_change_approx</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -- Approximate Case Influence on Parameter Estimates --</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    id m1~iv1  id m1~iv2 id  dv~m1  id m1~~m1 id dv~~dv</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  51  0.042  43 -0.025 65  0.037  61  0.042 16  0.106</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  43 -0.040  94  0.023 11 -0.027  85  0.040  9  0.050</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  34 -0.032 100 -0.022 16 -0.024 100  0.037 76  0.049</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  18 -0.028  85  0.021 32 -0.020  18  0.031 25  0.049</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  13  0.028  20  0.020 99  0.020  42  0.028 91  0.043</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  32 -0.025  32  0.019 79  0.018  43  0.025 17  0.039</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7  20 -0.024  65  0.019 93  0.018  32  0.023 26  0.028</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  75  0.021  34 -0.018 22  0.017  34  0.022 65  0.027</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  42 -0.020  64 -0.016 61 -0.016  40  0.022 62  0.027</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 68  0.018  52  0.016 25 -0.015  20  0.022 90  0.024</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; - Changes are approximate raw changes if a case is included.</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by the absolute changes for each variable.</span></span></code></pre></div>
 <p>Here is a comparison between the approximation using
 <code>semfindr::est_change_raw_approx()</code> and
 <code>semfindr::est_change_raw()</code></p>
@@ -454,14 +466,26 @@ described by <a href="https://conservancy.umn.edu/handle/11299/37076">Cook and W
 <p>This is implemented in the <code>est_change_approx()</code>
 function:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_est_change_approx <span class="ot">&lt;-</span> <span class="fu">est_change_approx</span>(fit)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit_est_change_approx)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         m1~iv1       m1~iv2        dv~m1      m1~~m1      dv~~dv  gcd_approx</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.024713396 -0.030383580  0.052370026 -0.03784100  0.01630488 0.005850455</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  0.007254736  0.003469647 -0.013223396 -0.06916983 -0.05953293 0.008312026</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.037982774 -0.039820283 -0.030150418 -0.06518369 -0.04609708 0.009904544</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 -0.024353717 -0.003172373  0.021948305 -0.05277394 -0.04504791 0.005719499</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  0.067010210  0.027951233  0.032981527  0.04860722 -0.06774242 0.012793226</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  0.004065567  0.000983731  0.009640981 -0.07086163 -0.05565453 0.007984573</span></span></code></pre></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit_est_change_approx</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -- Approximate Standardized Case Influence on Parameter Estimates --</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     m1~iv1 m1~iv2  dv~m1 m1~~m1 dv~~dv gcd_approx</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16   0.052 -0.038 -0.228 -0.006  0.572      0.372</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 43  -0.387 -0.249 -0.135  0.201  0.116      0.270</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 65   0.150  0.189  0.355  0.071  0.148      0.203</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 85  -0.170  0.211 -0.118  0.315 -0.054      0.187</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 51   0.405 -0.052  0.094  0.075 -0.046      0.179</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 34  -0.306 -0.186 -0.110  0.176  0.028      0.163</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 32  -0.241  0.190 -0.189  0.181 -0.002      0.161</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20  -0.234  0.199 -0.140  0.172 -0.034      0.144</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18  -0.269  0.035  0.101  0.246 -0.048      0.143</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 100 -0.001 -0.221 -0.069  0.290 -0.058      0.137</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; - Changes are approximate standardized raw changes if a case is included.</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by approximate generalized Cook&#39;s distance.</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare to exact computation</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit_est_change <span class="ot">&lt;-</span> <span class="fu">est_change</span>(fit_rerun)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
@@ -541,6 +565,19 @@ comparison:</p>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>The values aligned reasonably well along the 45-degree line.</p>
 </div>
+</div>
+<div id="limitations" class="section level1">
+<h1>Limitations</h1>
+<ul>
+<li><p>The approximate approach is tested only for models fitted by
+maximum likelihood (ML) with normal theory standard errors (the
+default).</p></li>
+<li><p>The approximate approach does not yet support multilevel
+models.</p></li>
+</ul>
+<p>The <code>lavaan</code> object will be checked by
+<code>approx_check()</code> to see if it is supported. If not, an error
+will be raised.</p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>

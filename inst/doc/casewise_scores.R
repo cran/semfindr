@@ -30,7 +30,7 @@ head(lavScores(fit)[ , 1, drop = FALSE])
 
 ## ----fit_est_change_approx----------------------------------------------------
 fit_est_change_approx <- est_change_raw_approx(fit)
-head(fit_est_change_approx)
+fit_est_change_approx
 
 ## ----compare-est-change-------------------------------------------------------
 # From semfindr
@@ -59,7 +59,7 @@ gcd_approx <- (nobs(fit) - 1) * rowSums(
 
 ## ----est_change_approx-gcd----------------------------------------------------
 fit_est_change_approx <- est_change_approx(fit)
-head(fit_est_change_approx)
+fit_est_change_approx
 
 ## ----compare-approx-gcd-------------------------------------------------------
 # Compare to exact computation

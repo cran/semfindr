@@ -26,7 +26,22 @@
 #' Unlike [est_change_raw()], [est_change()] does not support
 #' computing the standardized changes of standardized estimates.
 #'
-#' Currently it only supports single-group models.
+#' It will also compute generalized Cook's distance (*gCD*), proposed by
+#' Pek and MacCallum (2011) for structural equation modeling.
+#' Only the parameters selected (all free parameters, by default)
+#' will be used in computing *gCD*.
+#'
+#' Since version 0.1.4.8, if (a) a model has one or more equality
+#' constraints, and
+#' (b) some selected parameters are linearly dependent or constrained
+#' to be equal due to the constraint(s), *gCD* will be computed
+#' by removing parameters such that the remaining parameters are
+#' not linearly dependent nor constrained to be equal.
+#' (Support for equality constraints and
+#' linearly dependent parameters available in 0.1.4.8 and later version).
+#'
+#' Supports both single-group and multiple-group models.
+#' (Support for multiple-group models available in 0.1.4.8 and later version).
 #'
 #' @param rerun_out The output from [lavaan_rerun()].
 #'
@@ -41,13 +56,15 @@
 #' If omitted or `NULL`, the
 #' default, changes on all free parameters will be computed.
 #'
-#' @return A matrix. The number of columns is equal to the number of
+#' @return An `est_change`-class object, which is
+#' matrix with the number of columns equals to the number of
 #' requested parameters plus one, the last column being the
-#' approximate generalized Cook's
+#' generalized Cook's
 #' distance. The number of rows equal to the number
 #' of cases. The row names are the case identification values used in
 #' [lavaan_rerun()]. The elements are the standardized difference.
 #' Please see Pek and MacCallum (2011), Equation 7.
+#' A print method is available for user-friendly output.
 #'
 #' @author Shu Fai Cheung <https://orcid.org/0000-0002-9871-9448>.
 #'
@@ -153,6 +170,7 @@ est_change <- function(rerun_out,
   case_ids <- names(rerun_out$rerun)
   reruns <- rerun_out$rerun
   fit0   <- rerun_out$fit
+
   estorg   <- lavaan::parameterEstimates(
               fit0,
               se = FALSE,
@@ -167,13 +185,26 @@ est_change <- function(rerun_out,
               output = "data.frame"
               )
   ngroups <- lavaan::lavTech(fit0, "ngroups")
-  if (ngroups == 1) estorg$group <- 1
+  if (ngroups == 1) {
+      estorg$group <- 1
+      estorg$group[estorg$op == ":="] <- 0
+    }
   ptable <- lavaan::parameterTable(fit0)
   ptable_cols <- c("lhs", "op", "rhs",
                     "free", "label", "id",
-                    "lavlabel")
+                    "lavlabel", "group")
+
+  # Ensure that plabels are not used as lavlabels
+  tmp1 <- ptable$plabel[ptable$plabel != ""]
+  tmp2 <- ptable$label %in% tmp1
+  tmp3 <- ptable$label
+  ptable$label[tmp2] <- ""
   ptable$lavlabel <- lavaan::lav_partable_labels(ptable,
                                                  type = "user")
+  ptable$label <- tmp3
+  tmp <- (ptable$lavlabel == ptable$plabel)
+  ptable$lavlabel[tmp] <- ""
+
   est0 <- merge(estorg, ptable[, ptable_cols])
   est0 <- est0[order(est0$id), ]
   parameters_names <- est0$lavlabel
@@ -184,6 +215,17 @@ est_change <- function(rerun_out,
     } else {
       parameters_selected <- est0$free[est0$free > 0]
     }
+
+  # Not yet support parameters constrained to be equal
+  tmp <- tryCatch(solve(vcov(fit0)[parameters_selected,
+                                   parameters_selected]),
+                   error = function(e) e)
+  if (inherits(tmp, "error")) {
+      any_depend <- TRUE
+    } else {
+      any_depend <- FALSE
+    }
+
   out <- sapply(reruns,
                 function(x, est, parameters_names, parameters_selected) {
                   chk <- suppressWarnings(lavaan::lavTech(x, "post.check"))
@@ -206,6 +248,14 @@ est_change <- function(rerun_out,
   out <- t(out)
   colnames(out) <- c(parameters_names[parameters_selected], "gcd")
   rownames(out) <- case_ids
+
+  attr(out, "call") <- match.call()
+  attr(out, "change_type") <- "standardized"
+  attr(out, "method") <- "leave_one_out"
+  attr(out, "standardized") <- FALSE
+
+  class(out) <- c("est_change", class(out))
+
   out
 }
 
@@ -238,13 +288,35 @@ est_change_i <- function(x,
   q <- which(vcovi_full_names %in% est$label)
   colnames(vcovi_full)[q] <- parameters_names[q]
   rownames(vcovi_full)[q] <- parameters_names[q]
-  vcovi_full <- vcovi_full[parameters_selected, parameters_selected]
+  vcovi_full <- vcovi_full[parameters_selected, parameters_selected,
+                           drop = FALSE]
   k <- length(esti_change)
   esti_change_raw <- (est$est - esti_full$est)
   names(esti_change_raw) <- parameters_names
   esti_change_raw <- esti_change_raw[parameters_selected]
-  gcdi <- matrix(esti_change_raw, 1, k) %*% solve(vcovi_full) %*%
-          matrix(esti_change_raw, k, 1)
+  vcovi_full_inv <- tryCatch(solve(vcovi_full),
+                             error = function(e) e)
+  if (inherits(vcovi_full_inv, "error")) {
+      vcovi_full_0 <- full_rank(vcovi_full)
+      vcovi_full_1 <- vcovi_full_0$final
+      p_kept <- seq_len(ncol(vcovi_full))
+      if (length(vcovi_full_0$dropped) > 0) {
+          p_kept <- p_kept[-vcovi_full_0$dropped]
+        }
+      vcovi_full_1_inv <- tryCatch(solve(vcovi_full_1),
+                                   error = function(e) e)
+      if (inherits(vcovi_full_1_inv, "error")) {
+          gcdi <- NA
+        } else {
+          esti_change_raw_1 <- esti_change_raw[p_kept]
+          k_1 <- length(p_kept)
+          gcdi <- matrix(esti_change_raw_1, 1, k_1) %*% vcovi_full_1_inv %*%
+                  matrix(esti_change_raw_1, k_1, 1)
+        }
+    } else {
+      gcdi <- matrix(esti_change_raw, 1, k) %*% vcovi_full_inv %*%
+              matrix(esti_change_raw, k, 1)
+    }
   outi <- c(esti_change, gcdi)
   names(outi) <- c(parameters_names[parameters_selected], "gcd")
   outi

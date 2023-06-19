@@ -36,31 +36,31 @@ head(fit_rerun$rerun[1:3])
 
 ## -----------------------------------------------------------------------------
 fit_est_change <- est_change(fit_rerun)
-round(head(fit_est_change), 3)
+fit_est_change
 
 ## -----------------------------------------------------------------------------
 fit_est_change_paths_only <- est_change(fit_rerun,
                                 parameters = c("m1 ~ iv1",
                                                "m1 ~ iv2",
                                                "dv ~ m1"))
-round(fit_est_change_paths_only[1:5, ], 3)
+fit_est_change_paths_only
 
 ## -----------------------------------------------------------------------------
 fit_est_change_raw <- est_change_raw(fit_rerun)
-round(fit_est_change_raw[1:5, ], 3)
+fit_est_change_raw
 
 ## -----------------------------------------------------------------------------
 fit_md <- mahalanobis_rerun(fit_rerun)
-round(fit_md[1:5, , drop = FALSE], 3)
+fit_md
 
 ## -----------------------------------------------------------------------------
 fit_mc <- fit_measures_change(fit_rerun,
             fit_measures = c("chisq", "cfi", "tli", "rmsea"))
-round(fit_mc[1:5, ], 3)
+fit_mc
 
 ## -----------------------------------------------------------------------------
 fit_influence <- influence_stat(fit_rerun)
-round(fit_influence[1:5, ], 3)
+fit_influence
 
 ## -----------------------------------------------------------------------------
 gcd_plot(fit_influence, largest_gcd = 3)

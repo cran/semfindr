@@ -21,13 +21,15 @@ If omitted or \code{NULL}, the
 default, changes on all free parameters will be computed.}
 }
 \value{
-A matrix. The number of columns is equal to the number of
+An \code{est_change}-class object, which is
+matrix with the number of columns equals to the number of
 requested parameters plus one, the last column being the
-approximate generalized Cook's
+generalized Cook's
 distance. The number of rows equal to the number
 of cases. The row names are the case identification values used in
 \code{\link[=lavaan_rerun]{lavaan_rerun()}}. The elements are the standardized difference.
 Please see Pek and MacCallum (2011), Equation 7.
+A print method is available for user-friendly output.
 }
 \description{
 Gets a \code{\link[=lavaan_rerun]{lavaan_rerun()}} output and computes the
@@ -57,7 +59,22 @@ is deleted, \code{NA}s will be turned for this case on the differences.
 Unlike \code{\link[=est_change_raw]{est_change_raw()}}, \code{\link[=est_change]{est_change()}} does not support
 computing the standardized changes of standardized estimates.
 
-Currently it only supports single-group models.
+It will also compute generalized Cook's distance (\emph{gCD}), proposed by
+Pek and MacCallum (2011) for structural equation modeling.
+Only the parameters selected (all free parameters, by default)
+will be used in computing \emph{gCD}.
+
+Since version 0.1.4.8, if (a) a model has one or more equality
+constraints, and
+(b) some selected parameters are linearly dependent or constrained
+to be equal due to the constraint(s), \emph{gCD} will be computed
+by removing parameters such that the remaining parameters are
+not linearly dependent nor constrained to be equal.
+(Support for equality constraints and
+linearly dependent parameters available in 0.1.4.8 and later version).
+
+Supports both single-group and multiple-group models.
+(Support for multiple-group models available in 0.1.4.8 and later version).
 }
 \examples{
 library(lavaan)
