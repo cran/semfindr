@@ -1,3 +1,20 @@
+# semfindr 0.1.8
+
+## Others
+
+- Updated the two tests for nonconvergence.
+  Will check against results generated
+  by directly calling `lavaan` functions.
+  (0.1.6.1)
+
+- To be ready for newer versions of
+  `lavaan`. (0.1.7 - 0.1.8)
+
+## Bug Fixes
+
+- Fixed a bug with listwise deletion
+  in `lavaan_rerun()`. (0.1.6.2)
+
 # semfindr 0.1.6
 
 ## New Features
