@@ -382,7 +382,7 @@ selected. This can be done using the argument <code>to_rerun</code> of
 <code>lavaan_rerun()</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>rerun_out <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit,</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                          <span class="at">to_rerun =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">15</span>, <span class="dv">18</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.04 second(s).</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.06 second(s).</span></span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Only four reruns in the output:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>rerun_out</span>
@@ -418,7 +418,7 @@ selected. This can be done using the argument <code>to_rerun</code> of
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                                       <span class="st">&quot;case4&quot;</span>,</span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>                                       <span class="st">&quot;case15&quot;</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                                       <span class="st">&quot;case18&quot;</span>))</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.04 second(s).</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.06 second(s).</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Only four reruns in the output. User supplied case IDs are used in
 the output:</p>
@@ -466,7 +466,7 @@ refitting a model.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>rerun_out <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit,</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>                          <span class="at">case_id =</span> dat<span class="sc">$</span>id,</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>                          <span class="at">resid_md_top =</span> <span class="dv">5</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.05 second(s).</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.08 second(s).</span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Five cases were selected, as shown below:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>rerun_out</span>
@@ -510,7 +510,7 @@ this distance to be selected for refitting a model.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>rerun_out <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit,</span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>                          <span class="at">case_id =</span> dat<span class="sc">$</span>id,</span>
 <span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                          <span class="at">md_top =</span> <span class="dv">5</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.05 second(s).</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.08 second(s).</span></span>
 <span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Five cases were selected, as shown below:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>rerun_out</span>

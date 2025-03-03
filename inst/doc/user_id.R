@@ -29,7 +29,7 @@ if (file.exists("user_id_fit_rerun.RDS")) {
   }
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  fit_rerun <- lavaan_rerun(fit, case_id = dat$id)
+# fit_rerun <- lavaan_rerun(fit, case_id = dat$id)
 
 ## -----------------------------------------------------------------------------
 head(fit_rerun$rerun[1:3])
