@@ -143,6 +143,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 
 
 
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -343,8 +366,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Instead of using row numbers (<code>case.idx</code> in the
 <code>lavaan</code> object), <code>lavaan_rerun()</code> from the
 package <a href="https://sfcheung.github.io/semfindr/">semfindr</a>
-supports user supplied case IDs. This can make the output more
-readable.</p>
+<span class="citation">(Cheung &amp; Lai, 2026)</span> supports user
+supplied case IDs. This can make the output more readable.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(semfindr)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>dat <span class="ot">&lt;-</span> pa_dat</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Add case id</span></span>
@@ -372,53 +395,18 @@ to this data set using <code>lavaan::sem()</code>:</p>
 Although the <code>id</code> column is not stored in
 <code>lavaan</code>, it can be supplied through the argument
 <code>case_id</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>fit_rerun <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit, <span class="at">case_id =</span> dat<span class="sc">$</span>id)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>fit_rerun <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                          <span class="at">case_id =</span> dat<span class="sc">$</span>id)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 10.5 second(s).</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; ! lavaan-&gt;lav_lavdata():  </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;    data= argument is not a data.frame, but of class &#39;numeric&#39;</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; Timing stopped at: 0.03 0 0.03</span></span></code></pre></div>
 <p>The list of reruns now uses <code>id</code> as the names:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">head</span>(fit_rerun<span class="sc">$</span>rerun[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; $case1</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; lavaan 0.6.15 ended normally after 2 iterations</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;   Estimator                                         ML</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;   Optimization method                           NLMINB</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;   Number of model parameters                         5</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;   Number of observations                            99</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; Model Test User Model:</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;                                                       </span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;   Test statistic                                 6.557</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;   Degrees of freedom                                 2</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt;   P-value (Chi-square)                           0.038</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; $case10</span></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; lavaan 0.6.15 ended normally after 1 iteration</span></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt;   Estimator                                         ML</span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt;   Optimization method                           NLMINB</span></span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt;   Number of model parameters                         5</span></span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt;   Number of observations                            99</span></span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; Model Test User Model:</span></span>
-<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt;                                                       </span></span>
-<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt;   Test statistic                                 6.015</span></span>
-<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt;   Degrees of freedom                                 2</span></span>
-<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt;   P-value (Chi-square)                           0.049</span></span>
-<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; $case100</span></span>
-<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; lavaan 0.6.15 ended normally after 1 iteration</span></span>
-<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt;   Estimator                                         ML</span></span>
-<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt;   Optimization method                           NLMINB</span></span>
-<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt;   Number of model parameters                         5</span></span>
-<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt;   Number of observations                            99</span></span>
-<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; Model Test User Model:</span></span>
-<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt;                                                       </span></span>
-<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt;   Test statistic                                 6.620</span></span>
-<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co">#&gt;   Degrees of freedom                                 2</span></span>
-<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co">#&gt;   P-value (Chi-square)                           0.037</span></span></code></pre></div>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_rerun&#39; not found</span></span></code></pre></div>
 <p>As shown below, most diagnostic functions will use user supplied case
 IDs in their displays, making it easier to locate them in the original
 data set.</p>
@@ -428,201 +416,82 @@ data set.</p>
 <div id="standardized-changes-in-estimates" class="section level2">
 <h2>Standardized Changes in Estimates</h2>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>fit_est_change <span class="ot">&lt;-</span> <span class="fu">est_change</span>(fit_rerun)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>fit_est_change</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; -- Standardized Case Influence on Parameter Estimates --</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;         m1~iv1 m1~iv2  dv~m1 m1~~m1 dv~~dv   gcd</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; case16   0.052 -0.038 -0.237 -0.004  0.624 0.450</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; case43  -0.403 -0.263 -0.135  0.223  0.120 0.302</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; case65   0.152  0.191  0.363  0.076  0.161 0.221</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; case85  -0.174  0.216 -0.119  0.335 -0.052 0.208</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; case51   0.421 -0.057  0.094  0.089 -0.044 0.200</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; case34  -0.314 -0.192 -0.109  0.189  0.030 0.178</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; case32  -0.247  0.195 -0.191  0.193  0.001 0.175</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; case18  -0.273  0.035  0.101  0.260 -0.046 0.156</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; case20  -0.239  0.204 -0.141  0.183 -0.032 0.156</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; case100 -0.001 -0.225 -0.069  0.305 -0.056 0.152</span></span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; - Changes are standardized raw changes if a case is included.</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by generalized Cook&#39;s distance.</span></span></code></pre></div>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_rerun&#39; not found</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>fit_est_change</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_est_change&#39; not found</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>fit_est_change_paths_only <span class="ot">&lt;-</span> <span class="fu">est_change</span>(fit_rerun,</span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>                                <span class="at">parameters =</span> <span class="fu">c</span>(<span class="st">&quot;m1 ~ iv1&quot;</span>,</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>                                               <span class="st">&quot;m1 ~ iv2&quot;</span>,</span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>                                               <span class="st">&quot;dv ~ m1&quot;</span>))</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>fit_est_change_paths_only</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; -- Standardized Case Influence on Parameter Estimates --</span></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt;        m1~iv1 m1~iv2  dv~m1   gcd</span></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; case43 -0.403 -0.263 -0.135 0.238</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; case51  0.421 -0.057  0.094 0.190</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; case65  0.152  0.191  0.363 0.189</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; case34 -0.314 -0.192 -0.109 0.142</span></span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; case32 -0.247  0.195 -0.191 0.138</span></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; case20 -0.239  0.204 -0.141 0.121</span></span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; case85 -0.174  0.216 -0.119 0.093</span></span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; case11  0.010  0.149 -0.257 0.088</span></span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; case18 -0.273  0.035  0.101 0.087</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; case13  0.274  0.059 -0.068 0.082</span></span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; - Changes are standardized raw changes if a case is included.</span></span>
-<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
-<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by generalized Cook&#39;s distance.</span></span></code></pre></div>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_rerun&#39; not found</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>fit_est_change_paths_only</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_est_change_paths_only&#39; not found</span></span></code></pre></div>
 </div>
 <div id="raw-changes-in-estimates" class="section level2">
 <h2>Raw Changes in Estimates</h2>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>fit_est_change_raw <span class="ot">&lt;-</span> <span class="fu">est_change_raw</span>(fit_rerun)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>fit_est_change_raw</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; -- Case Influence on Parameter Estimates --</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;        id m1~iv1      id m1~iv2     id  dv~m1      id m1~~m1     id dv~~dv</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 1  case51  0.046  case43 -0.026 case65  0.039  case61  0.043 case16  0.108</span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; 2  case43 -0.043  case94  0.024 case11 -0.027  case85  0.041  case9  0.051</span></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; 3  case34 -0.033 case100 -0.022 case16 -0.024 case100  0.038 case76  0.050</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; 4  case13  0.030  case85  0.021 case32 -0.021  case18  0.032 case25  0.050</span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; 5  case18 -0.029  case20  0.020 case99  0.020  case42  0.029 case91  0.043</span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; 6  case32 -0.026  case32  0.019 case79  0.019  case43  0.028 case17  0.039</span></span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; 7  case20 -0.025  case65  0.019 case93  0.018  case32  0.024 case65  0.030</span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 8  case75  0.021  case34 -0.019 case22  0.017  case34  0.024 case26  0.029</span></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; 9  case42 -0.020  case64 -0.017 case61 -0.017  case20  0.023 case62  0.027</span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; 10 case68  0.020  case52  0.016 case25 -0.015  case40  0.023 case90  0.024</span></span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; - Changes are raw changes if a case is included.</span></span>
-<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
-<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by the absolute changes for each variable.</span></span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_rerun&#39; not found</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>fit_est_change_raw</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_est_change_raw&#39; not found</span></span></code></pre></div>
 </div>
 <div id="mahalanobis-distance" class="section level2">
 <h2>Mahalanobis Distance</h2>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>fit_md <span class="ot">&lt;-</span> <span class="fu">mahalanobis_rerun</span>(fit_rerun)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>fit_md</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; -- Mahalanobis Distance --</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;            md</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; case16 11.530</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; case99 11.312</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; case87 11.091</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; case43 10.181</span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; case51  9.869</span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; case13  8.476</span></span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; case91  8.078</span></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; case71  7.757</span></span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; case17  7.555</span></span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; case68  7.472</span></span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by Mahalanobis distance in decreasing order.</span></span></code></pre></div>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_rerun&#39; not found</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>fit_md</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_md&#39; not found</span></span></code></pre></div>
 </div>
 <div id="changes-in-fit-measures" class="section level2">
 <h2>Changes in Fit Measures</h2>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>fit_mc <span class="ot">&lt;-</span> <span class="fu">fit_measures_change</span>(fit_rerun,</span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>            <span class="at">fit_measures =</span> <span class="fu">c</span>(<span class="st">&quot;chisq&quot;</span>, <span class="st">&quot;cfi&quot;</span>, <span class="st">&quot;tli&quot;</span>, <span class="st">&quot;rmsea&quot;</span>))</span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>fit_mc</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; -- Case Influence on Fit Measures --</span></span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt;          chisq    cfi    tli  rmsea</span></span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; case1    0.154 -0.002 -0.005  0.002</span></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; case10   0.697 -0.013 -0.033  0.011</span></span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; case100  0.092 -0.006 -0.015  0.001</span></span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; case11   0.083 -0.002 -0.005  0.001</span></span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; case12   0.173 -0.003 -0.007  0.002</span></span>
-<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; case13  -0.909  0.020  0.050 -0.015</span></span>
-<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; case14  -0.239  0.004  0.011 -0.005</span></span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; case15   0.047  0.000  0.000  0.000</span></span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; case16  -1.533  0.019  0.048 -0.024</span></span>
-<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; case17  -1.591  0.027  0.066 -0.025</span></span>
-<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span></code></pre></div>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_rerun&#39; not found</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>fit_mc</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_mc&#39; not found</span></span></code></pre></div>
 </div>
 <div id="all-in-one-function" class="section level2">
 <h2>All-In-One-Function</h2>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>fit_influence <span class="ot">&lt;-</span> <span class="fu">influence_stat</span>(fit_rerun)</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>fit_influence</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; -- Standardized Case Influence on Parameter Estimates --</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;         m1~iv1 m1~iv2  dv~m1 m1~~m1 dv~~dv   gcd</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; case16   0.052 -0.038 -0.237 -0.004  0.624 0.450</span></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; case43  -0.403 -0.263 -0.135  0.223  0.120 0.302</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; case65   0.152  0.191  0.363  0.076  0.161 0.221</span></span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; case85  -0.174  0.216 -0.119  0.335 -0.052 0.208</span></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; case51   0.421 -0.057  0.094  0.089 -0.044 0.200</span></span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; case34  -0.314 -0.192 -0.109  0.189  0.030 0.178</span></span>
-<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; case32  -0.247  0.195 -0.191  0.193  0.001 0.175</span></span>
-<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt; case18  -0.273  0.035  0.101  0.260 -0.046 0.156</span></span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; case20  -0.239  0.204 -0.141  0.183 -0.032 0.156</span></span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; case100 -0.001 -0.225 -0.069  0.305 -0.056 0.152</span></span>
-<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; - Changes are standardized raw changes if a case is included.</span></span>
-<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
-<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by generalized Cook&#39;s distance.</span></span>
-<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt; -- Case Influence on Fit Measures --</span></span>
-<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt;          chisq    cfi  rmsea    tli</span></span>
-<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt; case1    0.154 -0.002  0.002 -0.005</span></span>
-<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt; case10   0.697 -0.013  0.011 -0.033</span></span>
-<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="co">#&gt; case100  0.092 -0.006  0.001 -0.015</span></span>
-<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="co">#&gt; case11   0.083 -0.002  0.001 -0.005</span></span>
-<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="co">#&gt; case12   0.173 -0.003  0.002 -0.007</span></span>
-<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="co">#&gt; case13  -0.909  0.020 -0.015  0.050</span></span>
-<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="co">#&gt; case14  -0.239  0.004 -0.005  0.011</span></span>
-<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt; case15   0.047  0.000  0.000  0.000</span></span>
-<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co">#&gt; case16  -1.533  0.019 -0.024  0.048</span></span>
-<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co">#&gt; case17  -1.591  0.027 -0.025  0.066</span></span>
-<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
-<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="co">#&gt; -- Mahalanobis Distance --</span></span>
-<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="co">#&gt;            md</span></span>
-<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a><span class="co">#&gt; case16 11.530</span></span>
-<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="co">#&gt; case99 11.312</span></span>
-<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a><span class="co">#&gt; case87 11.091</span></span>
-<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a><span class="co">#&gt; case43 10.181</span></span>
-<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a><span class="co">#&gt; case51  9.869</span></span>
-<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a><span class="co">#&gt; case13  8.476</span></span>
-<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a><span class="co">#&gt; case91  8.078</span></span>
-<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a><span class="co">#&gt; case71  7.757</span></span>
-<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="co">#&gt; case17  7.555</span></span>
-<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a><span class="co">#&gt; case68  7.472</span></span>
-<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
-<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a><span class="co">#&gt; - Only the first 10 case(s) is/are displayed. Set &#39;first&#39; to NULL to display all cases.</span></span>
-<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by Mahalanobis distance in decreasing order.</span></span></code></pre></div>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_rerun&#39; not found</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>fit_influence</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_influence&#39; not found</span></span></code></pre></div>
 </div>
 </div>
 <div id="diagnostic-plots" class="section level1">
 <h1>Diagnostic Plots</h1>
 <div id="generalized-cooks-distance" class="section level2">
 <h2>Generalized Cook’s Distance</h2>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">gcd_plot</span>(fit_influence, <span class="at">largest_gcd =</span> <span class="dv">3</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">gcd_plot</span>(fit_influence, <span class="at">largest_gcd =</span> <span class="dv">3</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_influence&#39; not found</span></span></code></pre></div>
 </div>
 <div id="mahalanobis-distance-1" class="section level2">
 <h2>Mahalanobis Distance</h2>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">md_plot</span>(fit_influence,</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>        <span class="at">largest_md =</span> <span class="dv">3</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>        <span class="at">largest_md =</span> <span class="dv">3</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_influence&#39; not found</span></span></code></pre></div>
 </div>
 <div id="fit-measure-vs.-generalized-cooks-distance" class="section level2">
 <h2>Fit Measure vs. Generalized Cook’s Distance</h2>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">gcd_gof_plot</span>(fit_influence,</span>
 <span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>             <span class="at">fit_measure =</span> <span class="st">&quot;rmsea&quot;</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>             <span class="at">largest_gcd =</span> <span class="dv">3</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>             <span class="at">largest_fit_measure =</span> <span class="dv">3</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>             <span class="at">largest_fit_measure =</span> <span class="dv">3</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_influence&#39; not found</span></span></code></pre></div>
 </div>
 <div id="bubble-plot" class="section level2">
 <h2>Bubble Plot</h2>
@@ -631,8 +500,19 @@ data set.</p>
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>                <span class="at">largest_gcd =</span> <span class="dv">3</span>,</span>
 <span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>                <span class="at">largest_fit_measure =</span> <span class="dv">3</span>,</span>
 <span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>                <span class="at">largest_md =</span> <span class="dv">3</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>                <span class="at">circle_size =</span> <span class="dv">15</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>                <span class="at">circle_size =</span> <span class="dv">15</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; ! object &#39;fit_influence&#39; not found</span></span></code></pre></div>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
+<div id="ref-cheung_semfindr_2026" class="csl-entry">
+Cheung, S. F., &amp; Lai, M. H. C. (2026). <span class="nocase">semfindr</span>: <span>An</span> <span>R</span> package
+for identifying influential cases in structural equation modeling.
+<em>Multivariate Behavioral Research</em>. <a href="https://doi.org/10.1080/00273171.2026.2634293">https://doi.org/10.1080/00273171.2026.2634293</a>
+</div>
 </div>
 </div>
 

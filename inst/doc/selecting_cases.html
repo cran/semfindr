@@ -143,6 +143,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 
 
 
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -341,7 +364,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <p>This vignette illustrates how to select cases when calling
-<code>lavaan_rerun()</code> from the package <a href="https://sfcheung.github.io/semfindr/">semfindr</a>.</p>
+<code>lavaan_rerun()</code> from the package <a href="https://sfcheung.github.io/semfindr/">semfindr</a> <span class="citation">(Cheung &amp; Lai, 2026)</span>.</p>
 <p>Instead of refitting the model <em>n</em> times, each time with each
 case removed, it is possible to use some criteria to select cases to be
 included in the analysis. This is useful when the time to fit a model is
@@ -367,13 +390,15 @@ illustration:</p>
 <span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; 6 case6  0.03143301  0.5859886  0.1420111  0.06286986</span></span></code></pre></div>
 <p>The following model is fitted to the data set:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>mod <span class="ot">&lt;-</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="st">&quot;</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="st">iv1 ~~ iv2</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="st">m1 ~ iv1 + iv2</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="st">dv ~ m1</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="st">&quot;</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(mod, dat)</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; This is lavaan 0.6-21</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; lavaan is FREE software! Please report any bugs.</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>mod <span class="ot">&lt;-</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="st">iv1 ~~ iv2</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="st">m1 ~ iv1 + iv2</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="st">dv ~ m1</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(mod, dat)</span></code></pre></div>
 <div id="row-numbers-or-case-ids" class="section level1">
 <h1>Row Numbers or Case IDs</h1>
 <p>Suppose, for some reasons, users want to refit a model only with
@@ -382,7 +407,7 @@ selected. This can be done using the argument <code>to_rerun</code> of
 <code>lavaan_rerun()</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>rerun_out <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit,</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                          <span class="at">to_rerun =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">15</span>, <span class="dv">18</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.06 second(s).</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.3 second(s).</span></span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Only four reruns in the output:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>rerun_out</span>
@@ -418,7 +443,7 @@ selected. This can be done using the argument <code>to_rerun</code> of
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                                       <span class="st">&quot;case4&quot;</span>,</span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>                                       <span class="st">&quot;case15&quot;</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                                       <span class="st">&quot;case18&quot;</span>))</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.06 second(s).</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.3 second(s).</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Only four reruns in the output. User supplied case IDs are used in
 the output:</p>
@@ -466,7 +491,7 @@ refitting a model.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>rerun_out <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit,</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>                          <span class="at">case_id =</span> dat<span class="sc">$</span>id,</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>                          <span class="at">resid_md_top =</span> <span class="dv">5</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.08 second(s).</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.38 second(s).</span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Five cases were selected, as shown below:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>rerun_out</span>
@@ -510,7 +535,7 @@ this distance to be selected for refitting a model.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>rerun_out <span class="ot">&lt;-</span> <span class="fu">lavaan_rerun</span>(fit,</span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>                          <span class="at">case_id =</span> dat<span class="sc">$</span>id,</span>
 <span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                          <span class="at">md_top =</span> <span class="dv">5</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.08 second(s).</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; The expected CPU time is 0.38 second(s).</span></span>
 <span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; Could be faster if run in parallel.</span></span></code></pre></div>
 <p>Five cases were selected, as shown below:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>rerun_out</span>
@@ -540,13 +565,13 @@ this distance to be selected for refitting a model.</p>
 <span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt; - All stored cases are displayed.</span></span>
 <span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt; - Cases sorted by generalized Cook&#39;s distance.</span></span></code></pre></div>
 <p>Note that selecting cases by this method <em>can</em> miss some
-influential cases (Pek &amp; MacCallum, 2011). Unlike multiple
-regression, this distance is not a measure of leverage. For a path
-model, this distance used distances from the centroid on <em>all</em>
-observed variables, including exogenous variables and endogenous
-variables. For a model with latent factors, this distance is affected by
-both residuals and values predicted by the latent factors. Therefore,
-this method should be used with caution.</p>
+influential cases <span class="citation">(Pek &amp; MacCallum,
+2011)</span>. Unlike multiple regression, this distance is not a measure
+of leverage. For a path model, this distance used distances from the
+centroid on <em>all</em> observed variables, including exogenous
+variables and endogenous variables. For a model with latent factors,
+this distance is affected by both residuals and values predicted by the
+latent factors. Therefore, this method should be used with caution.</p>
 </div>
 <div id="final-remarks" class="section level1">
 <h1>Final Remarks</h1>
@@ -557,11 +582,20 @@ selected cases are to be explored. For the final model(s),
 <code>lavaan_rerun()</code> using all cases are recommended, to serve as
 a final check on the sensitivity of the results to individual cases.</p>
 </div>
-<div id="reference" class="section level1">
-<h1>Reference</h1>
-<p>Pek, J., &amp; MacCallum, R. (2011). Sensitivity analysis in
-structural equation models: Cases and their influence. <em>Multivariate
-Behavioral Research, 46</em>(2), 202–228. <a href="https://doi.org/10.1080/00273171.2011.561068" class="uri">https://doi.org/10.1080/00273171.2011.561068</a></p>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
+<div id="ref-cheung_semfindr_2026" class="csl-entry">
+Cheung, S. F., &amp; Lai, M. H. C. (2026). <span class="nocase">semfindr</span>: <span>An</span> <span>R</span> package
+for identifying influential cases in structural equation modeling.
+<em>Multivariate Behavioral Research</em>. <a href="https://doi.org/10.1080/00273171.2026.2634293">https://doi.org/10.1080/00273171.2026.2634293</a>
+</div>
+<div id="ref-pek_sensitivity_2011" class="csl-entry">
+Pek, J., &amp; MacCallum, R. (2011). Sensitivity analysis in structural
+equation models: <span>Cases</span> and their influence.
+<em>Multivariate Behavioral Research</em>, <em>46</em>(2), 202–228. <a href="https://doi.org/10.1080/00273171.2011.561068">https://doi.org/10.1080/00273171.2011.561068</a>
+</div>
+</div>
 </div>
 
 
