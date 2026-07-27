@@ -29,7 +29,10 @@ counterparts for the approximate
 approach.}
 
 \item{column}{String. The column
-name of the values to be plotted.}
+name of the values to be plotted.
+Since Version 0.2.0.1, this
+argument can be omitted if the object has
+only one column.}
 
 \item{plot_title}{The title of the
 plot. Default is \code{"Index Plot"}.}
@@ -88,7 +91,7 @@ settings will be used.}
 
 \item{hline_aes}{A named list of
 arguments to be passed to
-\code{\link[ggplot2:geom_abline]{ggplot2::geom_hline()}} to modify how
+\code{\link[ggplot2:geom_hline]{ggplot2::geom_hline()}} to modify how
 to draw the horizontal line for zero
 case influence. Default is \code{list()}
 and internal default settings will be
@@ -96,7 +99,7 @@ used.}
 
 \item{cutoff_line_aes}{A named list
 of arguments to be passed to
-\code{\link[ggplot2:geom_abline]{ggplot2::geom_hline()}} to modify how
+\code{\link[ggplot2:geom_hline]{ggplot2::geom_hline()}} to modify how
 to draw the line for user cutoff
 values. Default is \code{list()}
 and internal default settings will be
@@ -104,7 +107,7 @@ used.}
 
 \item{case_label_aes}{A named list of
 arguments to be passed to
-\code{\link[ggrepel:geom_text_repel]{ggrepel::geom_label_repel()}} to
+\code{\link[ggrepel:geom_label_repel]{ggrepel::geom_label_repel()}} to
 modify how to draw the labels for
 cases marked (based on arguments
 such as \code{cutoff_x_low} or \code{largest_x}).
